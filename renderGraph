@@ -15,7 +15,8 @@ DEBUG="false"
 SIZEY=${2:-"60"} # How tall is one cell
 TAB_WIDTH=4
 COLOR="true"
-FONT=${3:-"DejaVu-Sans-Mono-Oblique"}
+FONT=${4:-"DejaVu-Sans-Mono-Bold-Oblique"}
+NODE_FONT=${3:-"Liberation-Mono-Bold"}
 #######################################
 
 
@@ -145,7 +146,7 @@ processNode() {
 	let textX="$xPlus1"*"$SIZEX"+"$textOffsetX"
 	#let labelY="$yPlus1"*"$SIZEY"-"$SIZEY"/4
 	let textY="$y"*"$SIZEY"+"$TEXT_OFFSET_Y"
-	instructionText="text $textX,$textY '$label'\n"
+	instructionText="text#font '$NODE_FONT' text $textX,$textY '$label' font '$FONT'\n"
 
 	instructions="$instructions""$instructionCircle""$instructionText"
 	let x="$x"+2
@@ -230,8 +231,8 @@ sortInstructions() {
 	if [[ "$DEBUG" == "true" ]]; then
 		echo -e "\nINSTRUCTIONS:\n$orderedInstructions"
 	fi
-	drawingInstructions=`echo -e "$orderedInstructions" | grep -v '^text '`
-	textInstructions=`echo -e "$orderedInstructions" | grep '^text '`
+	drawingInstructions=`echo -e "$orderedInstructions" | grep -v '^text ' | grep -v '^font '`
+	textInstructions=`echo -e "$orderedInstructions" | grep '^text \|^font '`
 }
 
 ####################
