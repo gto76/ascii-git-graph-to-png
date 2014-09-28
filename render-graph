@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ########################
-DEBUG="false" 
+DEBUG="true" 
 DELETE_TMP_FILES="false"
 ########################
 
@@ -13,7 +13,7 @@ TAB_WIDTH="4" # Need to be set correctly if input file contains tabs.
 COLOR="true" # Colorize the labels using standard git colors.
 PRINT_HELP="false"
 PRINT_VERSION="false"
-ANTIALIAS_HOR_AND_VER_LINES="false"
+DONT_ANTIALIAS_HOR_AND_VER_LINES="true"
 #####################################################################
 
 APP_NAME=`basename "$0"`
@@ -28,7 +28,7 @@ convert command. Intended for drawings of git history graphs.
 	-o, --output=FILENAME
 		choose the filename for the output file. The .png suffix will
 		be appended at the end of the name. Default output filename
-		is the input file name with the .png suffix.
+		is the input filename with the .png suffix.
 
 	-t, --tab-width=SIZE
 		set number of spaces tabs in input file are gonna be 
@@ -147,7 +147,10 @@ setConstants() {
 	TEXT_OFFSET_Y_EXPRESSION="scale=1;($RECTANGLE_HEIGHT-$FONT_SIZE)/2+$RECTANGLE_OFFSET+$FONT_SIZE-$VERTICAL_LIFT"
 	TEXT_OFFSET_Y=`echo "$TEXT_OFFSET_Y_EXPRESSION" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
 	# Width of the lines in pixels.
-	STROKE_WIDTH=`echo "scale=1;$SIZEY/30" | bc`
+	#STROKE_WIDTH=`echo "scale=1;$SIZEY/30" | bc`
+	#STROKE_WIDTH=8
+	STROKE_WIDTH=`echo "scale=1;($SIZEY+15)/30" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
+	echo "STROKE_WIDTH = $STROKE_WIDTH"
 	if [[ -z "$OUTPUT_FILE_NAME" ]]; then
 		OUTPUT_FILE_NAME="$FILE_NAME".png
 	fi
@@ -202,7 +205,7 @@ setColor() {
 # Draws rectangle and label on it.
 processLabel() {
 	restOfLine=${lines[$y]:$x}
-	label=`echo "$restOfLine" | grep -o "^[^ +()|\n\-]*"`
+	label=`echo "$restOfLine" | grep -Po '^[^ +()|\n\-\\\]*'`
 	length=${#label}
 	let newX="$x"+"$length"
 	let yPlus1="$y"+1
@@ -229,7 +232,7 @@ processLabel() {
 	instructionText="text $textX,$textY '$label'\n"
 
 	instructions="$instructions""$instructionRectangle""$instructionText"
-	x="$newX"
+	let x="$newX"-1 # Because x will get incremented at the start of next loop
 }
 
 ######################
@@ -280,7 +283,7 @@ processEdge() {
 		findEdgesEndpoints -1 -1 1 1 "$char"
 	fi
 
-	if [[ "$ANTIALIAS_HOR_AND_VER_LINES" == true ]]; then
+	if [[ "$DONT_ANTIALIAS_HOR_AND_VER_LINES" == true ]]; then
 		# If line is vertical or horizontal then turn antialising off
 		setAntialiasIfLineHorizontalOrVertical "$endpoint1" "$endpoint2"
 	fi
