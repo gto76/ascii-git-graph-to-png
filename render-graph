@@ -6,6 +6,8 @@ DEBUG="false"
 
 #####################################################################
 SIZEY="60" # How tall is one cell.
+SIZEY_MIN="2"
+SIZEY_MAX="62" # If larger, ImageMagick's bug appears. (v6.7.7-10)
 TAB_WIDTH="4" # Need to be set correctly if input file contains tabs.
 COLOR="true" # Colorize the labels using standard git colors.
 PRINT_HELP="false"
@@ -18,7 +20,13 @@ DESCRIPTION="Reads a graph from ascii drawing and creates PNG file using ImageMa
 convert command. Intended for drawings of git history graphs.
 
 	-s, --size=SIZE
-		set height of one cell in pixels, default value is $SIZEY
+		set height of one cell in pixels, default value is $SIZEY.
+		Will accept values between $SIZEY_MIN and $SIZEY_MAX.
+
+	-o, --output=FILENAME
+		choose the filename for the output file. The .png suffix will
+		be appended at the end of the name. Default output filename
+		is the input file name with the .png suffix.
 
 	-t, --tab-width=SIZE
 		set number of spaces tabs in input file are gonna be 
@@ -30,8 +38,7 @@ convert command. Intended for drawings of git history graphs.
 	-h, --help
 		display this help and exit
 
-	-v, --version
-		output version information and exit\n"
+	-v, --version output version information and exit\n"
 HOMEPAGE_BUGS="https://github.com/gto76/ascii-git-graph-to-png/issues"
 AUTHOR="Jure Sorn"
 COPYRIGHT="Copyright (c) 2014 Jure Sorn. The MIT License (MIT)."
@@ -40,9 +47,10 @@ VERSION="v0.9.0"
 #########################
 #### PARSE ARGUMENTS ####
 #########################
+
 parseArguments() {
 	# read the options
-	TEMP=`getopt -o hvcs:t: --long version,help,no-color,size:,tab-width: -n 'test.sh' -- "$@"`
+	TEMP=`getopt -o hvcs:o:t: --long help,version,no-color,size:,output:,tab-width: -n 'test.sh' -- "$@"`
 	eval set -- "$TEMP"
 
 	# extract options and their arguments into variables.
@@ -55,6 +63,11 @@ parseArguments() {
 				case "$2" in
 					"") shift 2 ;;
 					*) SIZEY=$2 ; shift 2 ;;
+				esac ;;
+			-o|--output)
+				case "$2" in
+					"") shift 2 ;;
+					*) OUTPUT_FILE_NAME=$2.png ; shift 2 ;;
 				esac ;;
 			-t|--tab-width)
 				case "$2" in
@@ -96,8 +109,8 @@ verifyArguments() {
 	elif [[ -z `echo "$SIZEY" | grep -P '^[0-9]+$'` ]]; then
 		echo "$APP_NAME: Invalid size argument" >&2
 		exit 1
-	elif [[ "$SIZEY" -lt 2 || "$SIZEY" -gt 200 ]]; then
-		echo "$APP_NAME: Size argument is out of range, use values between 2 and 200" >&2
+	elif [[ "$SIZEY" -lt "$SIZEY_MIN" || "$SIZEY" -gt "$SIZEY_MAX" ]]; then
+		echo "$APP_NAME: Size argument is out of range, use values between $SIZEY_MIN and $SIZEY_MAX" >&2
 		exit 1
 	elif [[ -z `echo "$TAB_WIDTH" | grep -P '^[0-9]+$'` ]]; then
 		echo "$APP_NAME: Invalid tab width" >&2
@@ -133,6 +146,9 @@ setConstants() {
 	TEXT_OFFSET_Y=`echo "$TEXT_OFFSET_Y_EXPRESSION" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
 	# Width of the lines in pixels.
 	STROKE_WIDTH=`echo "scale=1;$SIZEY/30" | bc`
+	if [[ -z "$OUTPUT_FILE_NAME" ]]; then
+		OUTPUT_FILE_NAME="$FILE_NAME".png
+	fi
 }
 
 ###############################
@@ -320,12 +336,11 @@ findEdgesEndpoint() {
 # Sort instructions so that edges get drawn first, then circles
 # and rectangles and lastly the labels.
 sortInstructions() {
-	orderedInstructions=`echo -e "$instructions" | sort -u | sed 's/^.*#//'`
+	drawingInstructions=`echo -e "$instructions" | grep -v '^text' | sort -u | sed 's/^.*#//'`
+	textInstructions=`echo -e "$instructions" | grep '^text' | sed 's/^.*#//' | sort -u`
 	if [[ "$DEBUG" == "true" ]]; then
-		echo -e "\nINSTRUCTIONS:\n$orderedInstructions"
+		echo -e "\nINSTRUCTIONS:\n$drawingInstructions\n$textInstructions"
 	fi
-	drawingInstructions=`echo -e "$orderedInstructions" | grep -v '^text ' | grep -v '^font '`
-	textInstructions=`echo -e "$orderedInstructions" | grep '^text \|^font '`
 }
 
 ####################
@@ -349,7 +364,12 @@ createPng() {
 	echo -e "$textInstructions\n" >> tmp.mvg
 	echo -e "pop graphic-context" >> tmp.mvg
 	echo -e "pop graphic-context" >> tmp.mvg
-	convert tmp.mvg tmp.png
+
+	convert tmp.mvg "$OUTPUT_FILE_NAME"
+
+	if [[ "$DEBUG" != "true" ]]; then
+		rm tmp.mvg
+	fi
 }
 
 ##############
