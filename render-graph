@@ -1,8 +1,9 @@
 #!/bin/bash
 
-#############
+########################
 DEBUG="false" 
-#############
+DELETE_TMP_FILES="false"
+########################
 
 #####################################################################
 SIZEY="60" # How tall is one cell.
@@ -12,6 +13,7 @@ TAB_WIDTH="4" # Need to be set correctly if input file contains tabs.
 COLOR="true" # Colorize the labels using standard git colors.
 PRINT_HELP="false"
 PRINT_VERSION="false"
+ANTIALIAS_HOR_AND_VER_LINES="false"
 #####################################################################
 
 APP_NAME=`basename "$0"`
@@ -278,7 +280,17 @@ processEdge() {
 		findEdgesEndpoints -1 -1 1 1 "$char"
 	fi
 
-	instruction="line $endpoint1 $endpoint2"
+	if [[ "$ANTIALIAS_HOR_AND_VER_LINES" == true ]]; then
+		# If line is vertical or horizontal then turn antialising off
+		setAntialiasIfLineHorizontalOrVertical "$endpoint1" "$endpoint2"
+	fi
+
+	if [[ "$antialias" == "false" ]]; then
+		instruction="line#stroke-antialias 0 line $endpoint1 $endpoint2 stroke-antialias 1"
+	else
+		instruction="line $endpoint1 $endpoint2"
+	fi
+
 	instructions="$instructions""$instruction""\n"
 }
 
@@ -329,6 +341,19 @@ findEdgesEndpoint() {
 	fi
 }
 
+setAntialiasIfLineHorizontalOrVertical() {
+	local x1=`echo "$1" | sed 's/,.*$//'`
+	local y1=`echo "$1" | sed 's/^[0-9]*,//'`
+	local x2=`echo "$2" | sed 's/,.*$//'`
+	local y2=`echo "$2" | sed 's/^[0-9]*,//'`
+
+	if [[ "$x1" -eq "$x2" || "$y1" -eq "$y2" ]]; then
+		antialias="false"
+	else
+		antialias="true"
+	fi
+}
+
 ###########################
 #### SORT INSTRUCTIONS ####
 ###########################
@@ -367,7 +392,7 @@ createPng() {
 
 	convert tmp.mvg "$OUTPUT_FILE_NAME"
 
-	if [[ "$DEBUG" != "true" ]]; then
+	if [[ "$DELETE_TMP_FILES" == "true" ]]; then
 		rm tmp.mvg
 	fi
 }
