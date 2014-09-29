@@ -21,9 +21,10 @@ Generates nice picture of the graph drawn in ascii art style. They say picture i
 
 ### How to run:
 ```bash
+$ sudo apt-get imagemagick
 $ git clone https://github.com/gto76/ascii-git-graph-to-png.git
 $ cd ascii-git-graph-to-png
-$ ./render-graph -e
+$ ./render-graph --example
 $ display example.png
 ```
 
