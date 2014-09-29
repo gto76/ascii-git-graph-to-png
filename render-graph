@@ -166,9 +166,7 @@ setConstants() {
 	TEXT_OFFSET_Y=`echo "$TEXT_OFFSET_Y_EXPRESSION" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
 	# Width of the lines in pixels.
 	#STROKE_WIDTH=`echo "scale=1;$SIZEY/30" | bc`
-	#STROKE_WIDTH=8
 	STROKE_WIDTH=`echo "scale=1;($SIZEY+15)/30" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
-	echo "STROKE_WIDTH = $STROKE_WIDTH"
 	if [[ -z "$OUTPUT_FILE_NAME" && "$DRAW_EXAMPLE" == "true" ]]; then
 		OUTPUT_FILE_NAME=example.png
 	elif [[ -z "$OUTPUT_FILE_NAME" && "$DRAW_EXAMPLE" == "false" ]]; then
@@ -441,6 +439,7 @@ main() {
 	instructions=""
 
 	if [[ "$DEBUG" == "true" ]]; then
+		echo "STROKE_WIDTH = $STROKE_WIDTH\n"
 		echo "INPUT FILE:"
 		echo "$INPUT_TEXT"
 		echo -e "\nPARSING:"
