@@ -1,2 +1,73 @@
 Ascii Git Graph To Png
 ======================
+
+Generates nice picture of the graph drawn in ascii art style. They say picture is worth more than a thousand words, so here you go:
+
+#### Input:
+```
+			origin/head origin/master
+			          \ /
+			     HEAD-(D)-master 
+			         / | \
+			       (B)(C) v1.0     
+			        | /          
+			       (A)         
+			        |     
+			       ---
+```
+
+#### Output:
+![Alt text](/doc/example.png?raw=true "Screenshot")
+
+### How to run:
+```bash
+$ git clone https://github.com/gto76/ascii-git-graph-to-png.git
+$ cd ascii-git-graph-to-png
+$ ./render-graph -e
+$ display example.png
+```
+
+### Man:
+```
+Usage: render-graph [OPTION]... [FILE]
+Reads a graph from ascii drawing and creates PNG file using ImageMagick's 
+convert command. Intended for drawings of git history graphs.
+
+	-s, --size=SIZE
+		set height of one cell in pixels, default value is 40.
+		Will accept values between 2 and 62.
+
+	-o, --output=FILENAME
+		choose the filename for the output file. The .png suffix will
+		be appended at the end of the name. Default output filename
+		is the input filename with the .png suffix.
+
+	-t, --tab-width=SIZE
+		set number of spaces tabs in input file are gonna be 
+		converted to, default value is 4
+
+	-c, --no-color
+		do not colorize the labels of the graph
+
+	-h, --help
+		display this help and exit
+
+	-e, --example
+		create picture from the example graph below. If output filename
+		is not specified, it gets saved as example.png
+
+			origin/head origin/master
+			          \ /
+			     HEAD-(D)-master 
+			         / | \
+			       (B)(C) v1.0     
+			        | /          
+			       (A)         
+			        |     
+			       ---
+
+	-v, --version output version information and exit
+
+Report bugs to https://github.com/gto76/ascii-git-graph-to-png/issues
+Copyright (c) 2014 Jure Sorn. The MIT License (MIT).
+```

@@ -1,0 +1,30 @@
+Ascii Git Graph To Png
+======================
+
+Generates nice picture of the graph drawn in ascii art style. They say picture is worth more than a thousand words, so here you go:
+
+#### Input:
+```
+			origin/head origin/master
+			          \ /
+			     HEAD-(D)-master 
+			         / | \
+			       (B)(C) v1.0     
+			        | /          
+			       (A)         
+			        |     
+			       ---
+```
+
+#### Output:
+![Alt text](/doc/example.png?raw=true "Screenshot")
+
+### How to run:
+```bash
+$ git clone https://github.com/gto76/ascii-git-graph-to-png.git
+$ cd ascii-git-graph-to-png
+$ ./render-graph -e
+$ display example.png
+```
+
+### Man:

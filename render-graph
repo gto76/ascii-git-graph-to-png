@@ -51,8 +51,8 @@ convert command. Intended for drawings of git history graphs.
 		display this help and exit
 
 	-e, --example
-		create picture from the example graph below, and save it into
-		example.png
+		create picture from the example graph below. If output filename
+		is not specified, it gets saved as example.png
 
 $EXAMPLE
 
@@ -169,9 +169,9 @@ setConstants() {
 	#STROKE_WIDTH=8
 	STROKE_WIDTH=`echo "scale=1;($SIZEY+15)/30" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
 	echo "STROKE_WIDTH = $STROKE_WIDTH"
-	if [[ "$DRAW_EXAMPLE" == true ]]; then
+	if [[ -z "$OUTPUT_FILE_NAME" && "$DRAW_EXAMPLE" == "true" ]]; then
 		OUTPUT_FILE_NAME=example.png
-	elif [[ -z "$OUTPUT_FILE_NAME" ]]; then
+	elif [[ -z "$OUTPUT_FILE_NAME" && "$DRAW_EXAMPLE" == "false" ]]; then
 		OUTPUT_FILE_NAME="$FILE_NAME".png
 	fi
 }
@@ -310,7 +310,7 @@ processEdge() {
 	fi
 
 	if [[ "$DONT_ANTIALIAS_HOR_AND_VER_LINES" == true ]]; then
-		# If line is vertical or horizontal then turn antialising off
+		# If line is vertical or horizontal then turn antialiasing off
 		setAntialiasIfLineHorizontalOrVertical "$endpoint1" "$endpoint2"
 	fi
 
