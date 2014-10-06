@@ -1,0 +1,5 @@
+#!/bin/bash
+
+instalationDir="$PWD"
+cd /usr/local/bin
+sudo ln -s "$instalationDir"/render-graph .
