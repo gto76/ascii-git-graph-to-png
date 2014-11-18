@@ -159,14 +159,23 @@ setConstants() {
 	# Additional heightening of the text expressed in height of a text
 	VERTICAL_LIFT_FACTOR="0.13"
 	VERTICAL_LIFT_EXPRESSION="scale=1;$FONT_SIZE*$VERTICAL_LIFT_FACTOR"
-	VERTICAL_LIFT=`echo "$VERTICAL_LIFT_EXPRESSION" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
+	VERTICAL_LIFT=`echo "$VERTICAL_LIFT_EXPRESSION" \
+					| bc \
+					| sed 's/^\./0\./' \
+					| sed 's/\..*//'`
 	let RECTANGLE_HEIGHT="$SIZEY"-2*"$RECTANGLE_OFFSET"
 	# How far from the upper cells will be texts bottom.
 	TEXT_OFFSET_Y_EXPRESSION="scale=1;($RECTANGLE_HEIGHT-$FONT_SIZE)/2+$RECTANGLE_OFFSET+$FONT_SIZE-$VERTICAL_LIFT"
-	TEXT_OFFSET_Y=`echo "$TEXT_OFFSET_Y_EXPRESSION" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
+	TEXT_OFFSET_Y=`echo "$TEXT_OFFSET_Y_EXPRESSION" \
+					| bc \
+					| sed 's/^\./0\./' \
+					| sed 's/\..*//'`
 	# Width of the lines in pixels.
 	#STROKE_WIDTH=`echo "scale=1;$SIZEY/30" | bc`
-	STROKE_WIDTH=`echo "scale=1;($SIZEY+15)/30" | bc | sed 's/^\./0\./' | sed 's/\..*//'`
+	STROKE_WIDTH=`echo "scale=1;($SIZEY+15)/30" \
+					| bc \
+					| sed 's/^\./0\./' \
+					| sed 's/\..*//'`
 	if [[ -z "$OUTPUT_FILE_NAME" && "$DRAW_EXAMPLE" == "true" ]]; then
 		OUTPUT_FILE_NAME=example.png
 	elif [[ -z "$OUTPUT_FILE_NAME" && "$DRAW_EXAMPLE" == "false" ]]; then
@@ -247,7 +256,10 @@ processLabel() {
 	# TEXT:
 	# position x:
     textWidthExpression="scale=1;$FONT_SIZE*$length*$FONT_WIDTH_FACTOR"
-	textWidth=$(echo "$textWidthExpression" | bc | sed 's/^\./0\./' | sed 's/\..*//')
+	textWidth=$(echo "$textWidthExpression" \
+				| bc \
+				| sed 's/^\./0\./' \
+				| sed 's/\..*//')
 	let rectangleWidth="$length"*"$SIZEX"-2*"$RECTANGLE_OFFSET"
 	let textOffsetX=("$rectangleWidth"-"$textWidth")/2+"$RECTANGLE_OFFSET"
 	let textX="$x"*"$SIZEX"+"$textOffsetX"
@@ -278,7 +290,10 @@ processNode() {
 	#let labelX="$xPlus1"*"$SIZEX"
 	length=1
     textWidthExpression="scale=1;$FONT_SIZE*$length*$FONT_WIDTH_FACTOR"
-	textWidth=$(echo "$textWidthExpression" | bc | sed 's/^\./0\./' | sed 's/\..*//')
+	textWidth=$(echo "$textWidthExpression" \
+				| bc \
+				| sed 's/^\./0\./' \
+				| sed 's/\..*//')
 	let rectangleWidth="$length"*"$SIZEX"-2*"$RECTANGLE_OFFSET"
 	let textOffsetX=("$rectangleWidth"-"$textWidth")/2+"$RECTANGLE_OFFSET"
 	let textX="$xPlus1"*"$SIZEX"+"$textOffsetX"
@@ -288,6 +303,52 @@ processNode() {
 
 	instructions="$instructions""$instructionCircle""$instructionText"
 	let x="$x"+2
+}
+
+#######################
+#### PROCESS ARROW ####
+#######################
+
+drawLine() {
+	if [[ "$antialias" == "false" ]]; then
+		instruction="line#stroke-antialias 0 line $endpoint1 $endpoint2 stroke-antialias 1"
+	else
+		instruction="line $endpoint1 $endpoint2"
+	fi
+
+	instructions="$instructions""$instruction""\n"
+}
+
+# Reads line until the end of an arrow. Draws an arrow.
+processArrow() {
+	restOfLine=${lines[$y]:$x}
+	arrow=`echo "$restOfLine" | grep -oP '^_*\\\\'`
+	length=${#arrow}
+	let newX="$x"+"$length"
+
+	# Draw the horizontal line.
+	let scaledX="$x"*"$SIZEX"
+	let yPlus1="$y"+1
+	let scaledYPlus1="$yPlus1"*"$SIZEY"
+	endpoint1="$scaledX,$scaledYPlus1"
+	let scaledNewX="$newX"*"$SIZEX"
+	endpoint2="$scaledNewX,$scaledYPlus1"
+	drawLine
+
+	# Draw upper angeled line.
+	let newXMinus1="$newX"-1
+	let scaledNewXMinus1="$newXMinus1"*"$SIZEX"
+	let scaledY="$y"*"$SIZEY"
+	endpoint1="$scaledNewXMinus1,$scaledY"
+	drawLine
+	
+	# Draw lower angled line.
+	let yPlus2="$y"+2
+	let scaledYPlus2="$yPlus2"*"$SIZEY"
+	endpoint1="$scaledNewXMinus1,$scaledYPlus2"
+	drawLine
+
+	let x="$newX"-1 # Because x will get incremented at the start of next loop
 }
 
 ######################
@@ -388,8 +449,14 @@ setAntialiasIfLineHorizontalOrVertical() {
 # Sort instructions so that edges get drawn first, then circles
 # and rectangles and lastly the labels.
 sortInstructions() {
-	drawingInstructions=`echo -e "$instructions" | grep -v '^text' | sort -u | sed 's/^.*#//'`
-	textInstructions=`echo -e "$instructions" | grep '^text' | sed 's/^.*#//' | sort -u`
+	drawingInstructions=`echo -e "$instructions" \
+							| grep -v '^text' \
+							| sort -u \
+							| sed 's/^.*#//'`
+	textInstructions=`echo -e "$instructions" \
+						| grep '^text' \
+						| sed 's/^.*#//' \
+						| sort -u`
 	if [[ "$DEBUG" == "true" ]]; then
 		echo -e "\nINSTRUCTIONS:\n$drawingInstructions\n$textInstructions"
 	fi
@@ -451,23 +518,37 @@ main() {
 			echo -e "\nLine no $y: \"${lines[$y]}\""
 		fi
 		for (( x=0 ; x < ${#lines[y]} ; x++ )); do
-			# getChar "$x" "$y":
+			# Get char at x,y, analyze it and act accordingly
 			char=${lines[$y]:$x:1}
 			if [[ "$DEBUG" == "true" ]]; then
 				echo -en "\n$x" "$y" \""$char"\"' '
 			fi	
-			if [[ '-|/\\+() ' != *"$char"* ]]; then
+            # Every symbol that is not space or reserved for
+			# node, arrow or edge is considered a beginning of
+            # an label
+			if [[ '-|/\\+()_ ' != *"$char"* ]]; then
 				if [[ "$DEBUG" == "true" ]]; then
 					echo -n label 
 				fi
 				processLabel
 			fi
+			# Node looks like this: (A)
 			if [[ "$char" == '(' ]]; then
 				if [[ "$DEBUG" == "true" ]]; then
 					echo -n node 
 				fi
 				processNode 
 			fi
+            # Arrow looks like this: ___\
+            #                           /
+			if [[ "$char" == '_' ]]; then
+				if [[ "$DEBUG" == "true" ]]; then
+					echo -n arrow
+				fi
+				processArrow
+			fi
+            # Edges: | \   / ---
+            #        |  \ /
 			if [[ '-|/\' == *"$char"* ]]; then
 				if [[ "$DEBUG" == "true" ]]; then
 					echo -n edge
