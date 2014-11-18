@@ -407,10 +407,25 @@ findEdgesEndpoint() {
 	let newX="$connectToX"+"$1"
 	let newY="$connectToY"+"$2"
 	local char=${lines[$newY]:$newX:1}
-	if [[ -z "$char" || "$char" == ' ' ]]; then
+
+	# If char is empty or whitespace then return
+	if [[ -z "$char" ]]; then
 		return
+	fi
+
+	if [[ "$char" == ' ' ]]; then
+		# Check if char is not whitespace between two parenthesis (empty node)
+		let newXMinus1="$newX"-1
+		leftChar=${lines[$newY]:$newXMinus1:1}
+		if [[ "$leftChar" == '(' ]]; then
+			connectToX="$newX"
+			connectToY="$newY"
+		fi
+		return
+	fi
+
 	# If this field has the same edge character, continue to next one
-	elif [[ "$char" == "$3" ]]; then
+	if [[ "$char" == "$3" ]]; then
 		connectToX="$newX"
 		connectToY="$newY"
 		findEdgesEndpoint "$@"	
