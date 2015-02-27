@@ -21,11 +21,45 @@ Generates nice picture of the graph drawn in ascii art style. They say picture i
 
 ### How to run:
 ```bash
-$ sudo apt-get imagemagick
-$ git clone https://github.com/gto76/ascii-git-graph-to-png.git
-$ cd ascii-git-graph-to-png
-$ ./render-graph --example
-$ display example.png
+sudo apt-get imagemagick
+git clone https://github.com/gto76/ascii-git-graph-to-png.git
+cd ascii-git-graph-to-png
+./render-graph --example
+display example.png
+```
+
+### How to run on Windows:
+
+First download and install [wget](http://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-setup.exe/download), then run the folowing commands in command prompt.
+
+```bat
+:: set path of wget
+set PATH=%PATH%;C:\Program Files (x86)\GnuWin32\bin
+
+:: download cygwin
+wget --no-check-certificate https://cygwin.com/setup-x86_64.exe
+:: install cygwin
+mkdir cygwin
+setup-x86_64.exe --quiet-mode --no-shortcuts --site http://cygwin.mirror.constant.com --root %cd%\cygwin -P ImageMagick -P bc -P git
+:: run cygwin
+cygwin\Cygwin.bat
+```
+
+```bash
+# fix the missing fonts problem
+cd /usr/share
+mkdir fonts
+cd fonts
+ln -s /cygdrive/c/Windows/Fonts corefonts
+
+# get ascii-git-graph-to-png converter and generate example image
+cd
+git clone https://github.com/gto76/ascii-git-graph-to-png.git
+cd ascii-git-graph-to-png
+./render-graph --example
+
+# display image
+cygstart example.png
 ```
 
 ### Man:
