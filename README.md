@@ -41,6 +41,7 @@ wget --no-check-certificate https://cygwin.com/setup-x86_64.exe
 :: install cygwin
 mkdir cygwin
 setup-x86_64.exe --quiet-mode --no-shortcuts --site http://cygwin.mirror.constant.com --root %cd%\cygwin -P ImageMagick -P bc -P git
+::
 ```
 
 After that run the app with the following commands:
@@ -62,7 +63,7 @@ cd ascii-git-graph-to-png
 
 # display image
 cygstart example.png
-
+#
 ```
 
 ### Man:
