@@ -30,7 +30,7 @@ display example.png
 
 ### How to run on Windows:
 
-First download and install [wget](http://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-setup.exe/download), then run the folowing commands in command prompt.
+First download and install [wget](http://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-setup.exe/download), then open command prompt, go to the directory where you want the app installed, and first install Cygwin by pasting the following commands:
 
 ```bat
 :: set path of wget
@@ -41,11 +41,13 @@ wget --no-check-certificate https://cygwin.com/setup-x86_64.exe
 :: install cygwin
 mkdir cygwin
 setup-x86_64.exe --quiet-mode --no-shortcuts --site http://cygwin.mirror.constant.com --root %cd%\cygwin -P ImageMagick -P bc -P git
-:: run cygwin
-cygwin\Cygwin.bat
 ```
 
+After that run the app with the following commands:
+
 ```bash
+cygwin\Cygwin.bat
+
 # fix the missing fonts problem
 cd /usr/share
 mkdir fonts
@@ -60,6 +62,7 @@ cd ascii-git-graph-to-png
 
 # display image
 cygstart example.png
+
 ```
 
 ### Man:
