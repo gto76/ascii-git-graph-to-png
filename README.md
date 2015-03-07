@@ -20,6 +20,7 @@ Generates nice picture of the graph drawn in ascii art style. They say picture i
 ![Alt text](/doc/example.png?raw=true "Screenshot")
 
 ### How to run:
+#### UNIX
 ```bash
 sudo apt-get imagemagick
 git clone https://github.com/gto76/ascii-git-graph-to-png.git
@@ -28,7 +29,7 @@ cd ascii-git-graph-to-png
 display example.png
 ```
 
-### How to run on Windows:
+#### Windows
 
 First download and install [wget](http://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-setup.exe/download), then open command prompt, go to the directory where you want the app installed, and first install Cygwin by pasting the following commands:
 
