@@ -31,12 +31,14 @@ display example.png
 
 #### Windows
 
-First download and install [wget](http://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-setup.exe/download), then open command prompt, go to the directory where you want the app installed, and first install Cygwin by pasting the following commands:
+* Download and install [wget](http://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-setup.exe/download)
+* Open command prompt
+* Go to the directory where you want Cygwin installed
+* Install Cygwin:
 
-```bat
+>```bat
 :: set path of wget
 set PATH=%PATH%;C:\Program Files (x86)\GnuWin32\bin
-
 :: download cygwin
 wget --no-check-certificate https://cygwin.com/setup-x86_64.exe
 :: install cygwin
@@ -45,23 +47,20 @@ setup-x86_64.exe --quiet-mode --no-shortcuts --site http://cygwin.mirror.constan
 ::
 ```
 
-After that run the app with the following commands:
+* Download and run the game:
 
-```bash
+>```bash
 cygwin\Cygwin.bat
-
 # fix the missing fonts problem
 cd /usr/share
 mkdir fonts
 cd fonts
 ln -s /cygdrive/c/Windows/Fonts corefonts
-
 # get ascii-git-graph-to-png converter and generate example image
 cd
 git clone https://github.com/gto76/ascii-git-graph-to-png.git
 cd ascii-git-graph-to-png
 ./render-graph --example
-
 # display image
 cygstart example.png
 #
