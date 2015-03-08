@@ -47,7 +47,7 @@ setup-x86_64.exe --quiet-mode --no-shortcuts --site http://cygwin.mirror.constan
 ::
 ```
 
-* Download and run the game:
+* Download and run the app:
 
 >```bash
 cygwin\Cygwin.bat
