@@ -22,7 +22,7 @@ Generates nice picture of the graph drawn in ascii art style. They say picture i
 ### How to run:
 #### UNIX
 ```bash
-sudo apt-get imagemagick
+sudo apt-get install imagemagick
 git clone https://github.com/gto76/ascii-git-graph-to-png.git
 cd ascii-git-graph-to-png
 ./render-graph --example
