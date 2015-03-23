@@ -3,7 +3,7 @@ Ascii Git Graph To Png
 
 Generates nice picture of the graph drawn in ascii art style. They say picture is worth more than a thousand words, so here you go:
 
-#### Input:
+### Input
 ```
 			origin/head origin/master
 			          \ /
@@ -16,11 +16,13 @@ Generates nice picture of the graph drawn in ascii art style. They say picture i
 			       ---
 ```
 
-#### Output:
+### Output
 ![Alt text](/doc/example.png?raw=true "Screenshot")
 
-### How to run:
-#### UNIX
+How to run
+----------
+
+### UNIX
 ```bash
 sudo apt-get install imagemagick
 git clone https://github.com/gto76/ascii-git-graph-to-png.git
@@ -29,7 +31,7 @@ cd ascii-git-graph-to-png
 display example.png
 ```
 
-#### Windows
+### Windows
 
 * Download and install [wget](http://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-setup.exe/download)
 * Open command prompt
@@ -66,7 +68,8 @@ cygstart example.png
 #
 ```
 
-### Man:
+Man
+---
 ```
 Usage: render-graph [OPTION]... [FILE]
 Reads a graph from ascii drawing and creates PNG file using ImageMagick's 
