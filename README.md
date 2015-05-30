@@ -3,7 +3,7 @@ Ascii Git Graph To Png
 
 Generates nice picture of the graph drawn in ascii art style. They say picture is worth more than a thousand words, so here you go:
 
-### Input
+### Input:
 ```
 			origin/head origin/master
 			          \ /
@@ -16,11 +16,11 @@ Generates nice picture of the graph drawn in ascii art style. They say picture i
 			       ---
 ```
 
-### Output
+### Output:
 ![Alt text](/doc/example.png?raw=true "Screenshot")
 
-How to run
-----------
+How to run on …
+--------------
 
 ### UNIX
 ```bash
@@ -68,8 +68,8 @@ cygstart example.png
 #
 ```
 
-Man
----
+Help
+----
 ```
 Usage: render-graph [OPTION]... [FILE]
 Reads a graph from ascii drawing and creates PNG file using ImageMagick's 
