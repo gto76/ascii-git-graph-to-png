@@ -19,7 +19,7 @@ Generates nice picture of the graph drawn in ascii art style. They say picture i
 ### Output:
 ![Alt text](/doc/example.png?raw=true "Screenshot")
 
-How to run on …
+How to run on…
 --------------
 
 ### UNIX
