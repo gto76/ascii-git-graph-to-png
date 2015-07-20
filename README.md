@@ -1,4 +1,4 @@
-Ascii Git Graph To Png
+Ascii Git Graph to Png
 ======================
 
 Generates nice picture of the graph drawn in ascii art style. They say picture is worth more than a thousand words, so here you go:
