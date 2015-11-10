@@ -23,12 +23,12 @@ How to run on…
 --------------
 
 ### UNIX
-```bash
-sudo apt-get install imagemagick
-git clone https://github.com/gto76/ascii-git-graph-to-png.git
-cd ascii-git-graph-to-png
-./render-graph --example
-display example.png
+```
+$ sudo apt-get install imagemagick
+$ git clone https://github.com/gto76/ascii-git-graph-to-png.git
+$ cd ascii-git-graph-to-png
+$ ./render-graph --example
+$ display example.png
 ```
 
 ### Windows
@@ -68,8 +68,8 @@ cygstart example.png
 #
 ```
 
-Help
-----
+Options
+-------
 ```
 Usage: render-graph [OPTION]... [FILE]
 Reads a graph from ascii drawing and creates PNG file using ImageMagick's 
