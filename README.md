@@ -38,7 +38,7 @@ $ display example.png
 * Go to the directory where you want Cygwin installed
 * Install Cygwin:
 
->```bat
+```bat
 :: set path of wget
 set PATH=%PATH%;C:\Program Files (x86)\GnuWin32\bin
 :: download cygwin
@@ -51,7 +51,7 @@ setup-x86_64.exe --quiet-mode --no-shortcuts --site http://cygwin.mirror.constan
 
 * Download and run the app:
 
->```bash
+```bash
 cygwin\Cygwin.bat
 # fix the missing fonts problem
 cd /usr/share
